@@ -1,2 +1,10 @@
 .gradle/
 *.class
+build/
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+out/

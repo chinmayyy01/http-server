@@ -1,6 +1,6 @@
 package com;
 
-import java.io.InputStream;
+import com.server.ClientHandler;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -14,18 +14,9 @@ public class Main {
         Socket clientSocket = serverSocket.accept();
         System.out.println("Client connected");
 
-        InputStream inputStream = clientSocket.getInputStream();
+        ClientHandler handler = new ClientHandler(clientSocket);
+        handler.handle();
 
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-
-        while((bytesRead = inputStream.read(buffer)) != -1) {
-            String data = new String(buffer, 0, bytesRead);
-            System.out.print(data);
-        }
-
-        inputStream.close();
-        clientSocket.close();
         serverSocket.close();
     }
 }
