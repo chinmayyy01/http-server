@@ -16,3 +16,15 @@ The goal is to understand networking, HTTP semantics, and server architecture wi
 - `Main` now only starts the server, accepts the client, and delegates the work.
 - No change in functionality: server still prints raw HTTP request data and closes resources afterwards.
 - Refactor prepares the codebase for future steps including concurrency and basic HTTP parsing.
+
+### Day 3 — HTTP Request Parsing
+
+Implemented the first stage of HTTP protocol handling:
+
+- Parsed request line (method, path, version) from raw TCP input.
+- Parsed headers into a `Map<String, String>`.
+- Added `HttpRequest` class for structured representation.
+
+Tested using `curl` and browser; server correctly prints parsed request fields.
+
+Next: routing + HTTP responses.

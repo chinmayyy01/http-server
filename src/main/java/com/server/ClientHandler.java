@@ -2,6 +2,9 @@ package com.server;
 
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Map;
+import java.util.HashMap;
+import com.http.HttpRequest;
 
 public class ClientHandler {
     private final Socket socket;
@@ -13,13 +16,38 @@ public class ClientHandler {
     public void handle() throws Exception {
         InputStream inputStream = socket.getInputStream();
 
-        byte[] buffer = new byte[1204];
-        int bytesRead;
+        byte[] buffer = new byte[4096];
+        int bytesRead = inputStream.read(buffer);
 
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            String data = new String(buffer, 0, bytesRead);
-            System.out.println(data);
+        String raw = new String(buffer, 0, bytesRead);
+        String[] lines = raw.split("\r\n");
+
+        String requestLine = lines[0];
+        String[] parts = requestLine.split(" ");
+
+        String method = parts[0];
+        String path = parts[1];
+        String version = parts[2];
+
+        System.out.println("Method: " + method);
+        System.out.println("Path: " + path);
+        System.out.println("Version: " + version);
+
+        int lineIndex = 1;
+        Map<String, String> headers = new HashMap<>();
+
+        while (lineIndex < lines.length && !lines[lineIndex].isEmpty()) {
+            String[] headerParts = lines[lineIndex].split(":", 2);
+            String key = headerParts[0].trim();
+            String value = headerParts[1].trim();
+            headers.put(key, value);
+            lineIndex++;
         }
+
+        System.out.println("Headers: " + headers);
+
+        HttpRequest request = new HttpRequest(method, path, version, headers);
+        System.out.println(request);
 
         inputStream.close();
         socket.close();
