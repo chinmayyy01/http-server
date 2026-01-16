@@ -11,12 +11,12 @@ public class Main {
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Server started on port " + port);
 
-        Socket clientSocket = serverSocket.accept();
-        System.out.println("Client connected");
+        while (true) {
+            Socket clientSocket = serverSocket.accept();
+            System.out.println("Client connected");
 
-        ClientHandler handler = new ClientHandler(clientSocket);
-        handler.handle();
-
-        serverSocket.close();
+            ClientHandler handler = new ClientHandler(clientSocket);
+            handler.handle();
+        }
     }
 }
