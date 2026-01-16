@@ -15,6 +15,10 @@ public class ClientHandler {
 
     public void handle() throws Exception {
         InputStream inputStream = socket.getInputStream();
+        
+        byte[] buffer = new byte[4096];
+        int bytesRead = inputStream.read(buffer);
+        String raw = new String(buffer, 0 , bytesRead);
 
         byte[] buffer = new byte[4096];
         int bytesRead = inputStream.read(buffer);
