@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.util.Map;
 import java.util.HashMap;
 import com.http.HttpRequest;
+import java.io.OutputStream;
+import com.http.HttpResponse;
 
 public class ClientHandler {
     private final Socket socket;
@@ -15,13 +17,14 @@ public class ClientHandler {
 
     public void handle() throws Exception {
         InputStream inputStream = socket.getInputStream();
-        
-        byte[] buffer = new byte[4096];
-        int bytesRead = inputStream.read(buffer);
-        String raw = new String(buffer, 0 , bytesRead);
 
         byte[] buffer = new byte[4096];
         int bytesRead = inputStream.read(buffer);
+
+        if (bytesRead == -1) {
+            socket.close();
+            return;
+        }
 
         String raw = new String(buffer, 0, bytesRead);
         String[] lines = raw.split("\r\n");
@@ -48,10 +51,19 @@ public class ClientHandler {
             lineIndex++;
         }
 
-        System.out.println("Headers: " + headers);
-
         HttpRequest request = new HttpRequest(method, path, version, headers);
-        System.out.println(request);
+
+        HttpResponse response;
+
+        if (path.equals("/")) {
+            response = new HttpResponse(200, "Hello from my server!", "text/plain");
+        } else {
+            response = new HttpResponse(404, "Not Found", "text/plain");
+        }
+
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(response.toBytes());
+        outputStream.flush();
 
         inputStream.close();
         socket.close();
