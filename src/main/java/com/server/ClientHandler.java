@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.http.HttpRequest;
 import java.io.OutputStream;
 import com.http.HttpResponse;
+import com.server.Router;
 
 public class ClientHandler {
     private final Socket socket;
@@ -55,11 +56,8 @@ public class ClientHandler {
 
         HttpResponse response;
 
-        if (path.equals("/")) {
-            response = new HttpResponse(200, "Hello from my server!", "text/plain");
-        } else {
-            response = new HttpResponse(404, "Not Found", "text/plain");
-        }
+        Router router = new Router();
+        response = router.route(request);
 
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(response.toBytes());

@@ -24,4 +24,20 @@ public class HttpRequest {
                 ", headers=" + headers +
                 '}';
     }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 }
